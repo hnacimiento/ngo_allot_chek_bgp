@@ -71,11 +71,11 @@ IN_BANDWIDTH_NORMAL="1900000" # Kilobit per second
 OUT_BANDWIDTH_NORMAL="1900000" # Kilobit per second
 IN_BANDWIDTH_NEW="800000" # Kilobit per second
 OUT_BANDWIDTH_NEW="800000" # Kilobit per second
-SNMP_COMMUNITY="romon"
+SNMP_COMMUNITY="ramon"
 OID_BGPPEERSTATE=".1.3.6.1.2.1.15.3.1.2."
 BGP_NEIGHBOR01="200.0.17.1" # My IXP
-IP_ROUTER01="192.168.155.197"
-IP_ROUTER02="192.168.155.198"
+IP_ROUTER01="10.10.10.1"
+IP_ROUTER02="10.10.10.2"
 #------------------------------------------------------------------------------------------------------------------
 # Start logging
 if [ -d "$LOG_DIR" ]; then
