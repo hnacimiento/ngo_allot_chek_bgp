@@ -135,7 +135,7 @@ if [[ $ROUTER01 == "UP" && $ROUTER02 == "UP" ]] || [[ $ROUTER01 == "UP" || $ROUT
 elif [[ $ROUTER01 == "DONW" && $ROUTER02 == "DONW" ]]; then
 
      echo "Routers are DONW!"
-     echo "Nothing to do"
+     echo -e "Nothing to do\n"
      exit -1
 
 fi
@@ -162,7 +162,7 @@ else
      echo "The last bgpPeerState on file $LIB_DIR/bgpPeerState.sav: $LSTATE"
      echo "The Router01 ($IP_ROUTER01) whit BGP Neighbor $BGP_NEIGHBOR01 is established($RT01_PEERSTATE)"
      echo "The Router01 ($IP_ROUTER02) whit BGP Neighbor $BGP_NEIGHBOR01 is established($RT01_PEERSTATE)"
-     echo "Nothing to do"
+     echo -e "Nothing to do\n"
 fi
 }
 
@@ -192,7 +192,7 @@ install () {
 
           }' >> /etc/logrotate.d/ngo_check_bgp_peers
 
-  echo -e "\nScript installed!"
+  echo -e "\nScript installed!\n"
   exit 0
 }
 
