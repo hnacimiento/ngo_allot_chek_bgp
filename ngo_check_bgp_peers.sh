@@ -132,15 +132,15 @@ if [[ $ROUTER01 == "UP" && $ROUTER02 == "UP" ]] || [[ $ROUTER01 == "UP" || $ROUT
           echo "OK" > $LIB_DIR/bgpPeerState.sav
      fi
 
-elif [[ $ROUTER01 == "DOWN" ]] && [[ $ROUTER02 == "DOWN" ]]; then
+elif [[ $ROUTER01 == "DOWN" ]] && [[ $ROUTER02 == "DOWN" ]] || [[ -z $RT01_PEERSTATE && -z $RT02_PEERSTATE ]]; then
 
-     echo "Routers are DOWN!"
+     echo "Routers are DOWN or snmpget can not retrieve information!"
      echo -e "Nothing to do\n"
      exit -1
 
 fi
 
-if [[ $RT01_PEERSTATE != "6" && $RT02_PEERSTATE != "6" ]] ; then
+if [[ $RT01_PEERSTATE == [1-5] && $RT02_PEERSTATE == [1-5] ]]; then
      
      echo "FAIL" > $LIB_DIR/bgpPeerState.sav
      echo -e "Setting SSG Device Bandwidth on $SSG_DEVICENAME\nBooth IXP BGP peers are DOWN!"
@@ -161,7 +161,7 @@ if [[ $RT01_PEERSTATE == "6" || $RT02_PEERSTATE == "6" ]] && [[ $LSTATE == "FAIL
 else
      echo "The last bgpPeerState on file $LIB_DIR/bgpPeerState.sav: $LSTATE"
      echo "The Router01 ($IP_ROUTER01) whit BGP Neighbor $BGP_NEIGHBOR01 is established($RT01_PEERSTATE)"
-     echo "The Router02 ($IP_ROUTER02) whit BGP Neighbor $BGP_NEIGHBOR02 is established($RT02_PEERSTATE)"
+     echo "The Router02 ($IP_ROUTER02) whit BGP Neighbor $BGP_NEIGHBOR01 is established($RT02_PEERSTATE)"
      echo -e "Nothing to do\n"
 
 fi
