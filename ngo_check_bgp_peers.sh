@@ -106,17 +106,17 @@ do
           echo #Connection failure
           if [[ $ip == $IP_ROUTER01 ]]
           then
-               ROUTER01="DONW"
+               ROUTER01="DOWN"
                echo "Router $IP_ROUTER01 is $ROUTER01"
           elif [[ $ip == $IP_ROUTER02 ]]
           then
-               ROUTER02="DONW"
+               ROUTER02="DOWN"
                echo "Router $IP_ROUTER02 is $ROUTER02"
           fi
      fi
 done
 
-if [[ $ROUTER01 == "UP" && $ROUTER02 == "UP" ]] || [[ $ROUTER01 == "UP" || $ROUTER02 == "DONW" ]] || [[ $ROUTER01 == "DONW" || $ROUTER02 == "UP" ]]; then
+if [[ $ROUTER01 == "UP" && $ROUTER02 == "UP" ]] || [[ $ROUTER01 == "UP" || $ROUTER02 == "DOWN" ]] || [[ $ROUTER01 == "DOWN" || $ROUTER02 == "UP" ]]; then
 
      if [[ $ROUTER01 == "UP" ]]; then
           RT01_PEERSTATE=`snmpget -mALL -v2c -c $SNMP_COMMUNITY $IP_ROUTER01 $OID_BGPPEERSTATE$BGP_NEIGHBOR01 | grep -Po '(?<=INTEGER: )[1-6]+'`
@@ -132,17 +132,18 @@ if [[ $ROUTER01 == "UP" && $ROUTER02 == "UP" ]] || [[ $ROUTER01 == "UP" || $ROUT
           echo "OK" > $LIB_DIR/bgpPeerState.sav
      fi
 
-elif [[ $ROUTER01 == "DONW" && $ROUTER02 == "DONW" ]]; then
+elif [[ $ROUTER01 == "DOWN" ]] && [[ $ROUTER02 == "DOWN" ]]; then
 
-     echo "Routers are DONW!"
+     echo "Routers are DOWN!"
      echo -e "Nothing to do\n"
      exit -1
 
 fi
 
 if [[ $RT01_PEERSTATE != "6" && $RT02_PEERSTATE != "6" ]] ; then
+     
      echo "FAIL" > $LIB_DIR/bgpPeerState.sav
-     echo -e "Setting SSG Device Bandwidth on $SSG_DEVICENAME\nBooth IXP BGP peers are DONW!"
+     echo -e "Setting SSG Device Bandwidth on $SSG_DEVICENAME\nBooth IXP BGP peers are DOWN!"
      echo ConfigurationCLI.sh -setDevice -deviceName $SSG_DEVICENAME -setDeviceBandwidth IN_AND_OUT_EACH:$IN_BANDWIDTH_NEW:$OUT_BANDWIDTH_NEW
      cd $CONFCLI_PATH && ./ConfigurationCLI.sh -setDevice -deviceName $SSG_DEVICENAME -setDeviceBandwidth IN_AND_OUT_EACH:$IN_BANDWIDTH_NEW:$OUT_BANDWIDTH_NEW
 
@@ -156,13 +157,13 @@ if [[ $RT01_PEERSTATE == "6" || $RT02_PEERSTATE == "6" ]] && [[ $LSTATE == "FAIL
      echo "Setting new value for IN_BANDWIDTH="'"'$IN_BANDWIDTH_NORMAL'"  # Kilobit per second'
      echo "Setting new value for OUT_BANDWIDTH="'"'$OUT_BANDWIDTH_NORMAL'"  # Kilobit per second'
      echo "ConfigurationCLI.sh -setDevice -deviceName $SSG_DEVICENAME -setDeviceBandwidth IN_AND_OUT_EACH:$IN_BANDWIDTH_NORMAL:$OUT_BANDWIDTH_NORMAL"
-     cd $CONFCLI_PATH && ./ConfigurationCLI.sh -setDevice -deviceName $SSG_DEVICENAME -setDeviceBandwidth IN_AND_OUT_EACH:$IN_BANDWIDTH_NORMAL:$OUT_BANDWIDTH_NORMAL
-     echo "OK" > $LIB_DIR/bgpPeerState.sav
+     cd $CONFCLI_PATH && ./ConfigurationCLI.sh -setDevice -deviceName $SSG_DEVICENAME -setDeviceBandwidth IN_AND_OUT_EACH:$IN_BANDWIDTH_NORMAL:$OUT_BANDWIDTH_NORMAL && echo "OK" > $LIB_DIR/bgpPeerState.sav
 else
      echo "The last bgpPeerState on file $LIB_DIR/bgpPeerState.sav: $LSTATE"
      echo "The Router01 ($IP_ROUTER01) whit BGP Neighbor $BGP_NEIGHBOR01 is established($RT01_PEERSTATE)"
-     echo "The Router01 ($IP_ROUTER02) whit BGP Neighbor $BGP_NEIGHBOR01 is established($RT01_PEERSTATE)"
+     echo "The Router02 ($IP_ROUTER02) whit BGP Neighbor $BGP_NEIGHBOR02 is established($RT02_PEERSTATE)"
      echo -e "Nothing to do\n"
+
 fi
 }
 
@@ -202,6 +203,10 @@ if [ $OPTS = "install" ]; then install; fi
 
 # Start check
 startcheck
+
+
+# agregar cheaqueos para cuando la comunidad esta mal
+# agregar chequeos para cuando la IP del Router no es valida.
 
 #Other examples not testings
 #Change QoS for line
