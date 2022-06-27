@@ -167,7 +167,7 @@ fi
 }
 
 install () {
-    mkdir -p /var/lib/ngo
+    mkdir -p $LIB_DIR
     echo "cp -fv $SCRIPT_NAME /usr/local/bin/"
     cp -fv $SCRIPT_NAME /usr/local/bin/
     chown root:root /usr/local/bin/$SCRIPT_NAME
