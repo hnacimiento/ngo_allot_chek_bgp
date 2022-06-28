@@ -116,15 +116,25 @@ do
      fi
 done
 
+if [[ $ROUTER01 == "DOWN" && $ROUTER02 == "DOWN" ]]; then
+
+     echo "Routers are DOWN!"
+     echo -e "Nothing to do\n"
+     exit -1
+     
+fi
+
 if [[ $ROUTER01 == "UP" && $ROUTER02 == "UP" ]] || [[ $ROUTER01 == "UP" || $ROUTER02 == "DOWN" ]] || [[ $ROUTER01 == "DOWN" || $ROUTER02 == "UP" ]]; then
 
      if [[ $ROUTER01 == "UP" ]]; then
           RT01_PEERSTATE=`snmpget -mALL -v2c -c $SNMP_COMMUNITY $IP_ROUTER01 $OID_BGPPEERSTATE$BGP_NEIGHBOR01 | grep -Po '(?<=INTEGER: )[1-6]+'`
+          RT01_PEERSTATE_RC=$( echo $? )
           echo $RT01_PEERSTATE > $LIB_DIR/ROUTER01_bgpPeerState.sav
           echo "ROUTER01 snmpget bgpPeerState value: $RT01_PEERSTATE"
      fi
      if [[ $ROUTER02 == "UP" ]]; then
           RT02_PEERSTATE=`snmpget -mALL -v2c -c $SNMP_COMMUNITY $IP_ROUTER02 $OID_BGPPEERSTATE$BGP_NEIGHBOR01 | grep -Po '(?<=INTEGER: )[1-6]+'`
+          RT02_PEERSTATE_RC=$( echo $? )
           echo $RT02_PEERSTATE > $LIB_DIR/ROUTER02_bgpPeerState.sav
           echo "ROUTER02 snmpget bgpPeerState value: $RT02_PEERSTATE"
      fi
@@ -135,6 +145,14 @@ if [[ $ROUTER01 == "UP" && $ROUTER02 == "UP" ]] || [[ $ROUTER01 == "UP" || $ROUT
 elif [[ $ROUTER01 == "DOWN" ]] && [[ $ROUTER02 == "DOWN" ]] || [[ -z $RT01_PEERSTATE && -z $RT02_PEERSTATE ]]; then
 
      echo "Routers are DOWN or snmpget can not retrieve information!"
+     echo -e "Nothing to do\n"
+     exit -1
+
+fi
+
+if [[ -z $RT01_PEERSTATE && -z $RT02_PEERSTATE ]] || [[ $RT01_PEERSTATE_RC != "0" && $RT02_PEERSTATE_RC != "0" ]]; then
+
+     echo "snmpget can not retrieve information!"
      echo -e "Nothing to do\n"
      exit -1
 
