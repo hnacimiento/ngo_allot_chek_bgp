@@ -222,10 +222,6 @@ if [ $OPTS = "install" ]; then install; fi
 # Start check
 startcheck
 
-
-# agregar cheaqueos para cuando la comunidad esta mal
-# agregar chequeos para cuando la IP del Router no es valida.
-
 #Other examples not testings
 #Change QoS for line
 #./policyCLI.sh -UPdateTube -tubeDeviceName ServiceGateway -tubeType line -tubeLineName LINE -actionQos Line_min0max1G   
