@@ -1,6 +1,7 @@
 #!/bin/bash
 #------------------------------------------------------------------------------------------------------------------
 # Author: Hernan Dario Nacimiento | hernan.nacimiento@gmail.com
+# Special thanks to Perry Nakar from Allot for guiding me through the Alllot commands and tools.
 #
 # This script set the SSG Allot Bandwidth Limits whith setDeviceBandwidth action via Configuration CLI,
 # this is done based on check conditions via snmp of the BGP peer Status of main link.
