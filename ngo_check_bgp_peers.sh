@@ -87,34 +87,35 @@ else
 fi
 
 startcheck () {
-for ip in $IP_ROUTER01 $IP_ROUTER02
-do
-     ping -c2 -q $ip &>/dev/null
-     status=$( echo $? )
-     if [[ $status == 0 ]]
-     then
-          #Connection success!
-          if [[ $ip == $IP_ROUTER01 ]]
+     date
+     for ip in $IP_ROUTER01 $IP_ROUTER02
+     do
+          ping -c2 -q $ip &>/dev/null
+          status=$( echo $? )
+          if [[ $status == 0 ]]
           then
-               ROUTER01="UP"
-               echo "Router $IP_ROUTER01 is $ROUTER01"
-          elif [[ $ip == $IP_ROUTER02 ]]
-          then
-               ROUTER02="UP"
-               echo "Router $IP_ROUTER02 is $ROUTER02"
+               #Connection success!
+               if [[ $ip == $IP_ROUTER01 ]]
+               then
+                    ROUTER01="UP"
+                    echo "Router $IP_ROUTER01 is $ROUTER01"
+               elif [[ $ip == $IP_ROUTER02 ]]
+               then
+                    ROUTER02="UP"
+                    echo "Router $IP_ROUTER02 is $ROUTER02"
+               fi
+          else
+               echo #Connection failure
+               if [[ $ip == $IP_ROUTER01 ]]
+               then
+                    ROUTER01="DOWN"
+                    echo "Router $IP_ROUTER01 is $ROUTER01"
+               elif [[ $ip == $IP_ROUTER02 ]]
+               then
+                    ROUTER02="DOWN"
+                    echo "Router $IP_ROUTER02 is $ROUTER02"
+               fi
           fi
-     else
-          echo #Connection failure
-          if [[ $ip == $IP_ROUTER01 ]]
-          then
-               ROUTER01="DOWN"
-               echo "Router $IP_ROUTER01 is $ROUTER01"
-          elif [[ $ip == $IP_ROUTER02 ]]
-          then
-               ROUTER02="DOWN"
-               echo "Router $IP_ROUTER02 is $ROUTER02"
-          fi
-     fi
 done
 
 if [[ $ROUTER01 == "DOWN" && $ROUTER02 == "DOWN" ]]; then
@@ -187,6 +188,7 @@ fi
 }
 
 install () {
+    date
     mkdir -p $LIB_DIR
     echo "cp -fv $SCRIPT_NAME /usr/local/bin/"
     cp -fv $SCRIPT_NAME /usr/local/bin/
